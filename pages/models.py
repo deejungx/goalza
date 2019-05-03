@@ -96,10 +96,14 @@ class Booking(models.Model):
     duration = models.DurationField(default=DEFAULT_BOOKING_DURATION)
     booking_status = models.CharField(
             max_length=50,
-            choices=BOOKING_STATUS_CHOICES)
+            choices=BOOKING_STATUS_CHOICES,
+            default=CONFIRMED,
+            )
     payment_status = models.CharField(
             max_length=50,
-            choices=PAYMENT_STATUS_CHOICES)
+            choices=PAYMENT_STATUS_CHOICES,
+            default=PENDING,
+            )
 
     def __str__(self):
         return self.booking_id
