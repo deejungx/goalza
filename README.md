@@ -109,4 +109,4 @@ Finally, run the local server with
 python manage.py runserver
 ```
 
-Go to [localhost](127.0.0.1:8000/ "localhost")
+Go to [localhost](http://127.0.0.1:8000/ "localhost")
