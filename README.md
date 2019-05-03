@@ -48,12 +48,6 @@ Login to a Postgres session
 psql
 ```
 
-Login to a Postgres session 
-
-```bash
-psql
-```
-
 Create a database
 
 ```bash
