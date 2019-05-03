@@ -20,8 +20,8 @@ class FutsalCompany(models.Model):
     closing_time = models.TimeField(default=getDefaultClosingTime)
 
     class Meta:
-        ordering = ['futsal_name']
-        verbose_name_plural = 'futsal companies'
+        ordering = ["futsal_name"]
+        verbose_name_plural = "futsal companies"
 
     def __str__(self):
         return self.futsal_name
@@ -37,9 +37,6 @@ class Ground(models.Model):
 
     def __str__(self):
         return self.ground_name
-
-    class Meta:
-        ordering = ['ground_number']
 
 
 

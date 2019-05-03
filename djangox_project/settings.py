@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'allauth.account',
     'crispy_forms',
     'debug_toolbar',
+    'django_extensions',
 
     # Local
     'users',
@@ -87,8 +88,12 @@ WSGI_APPLICATION = 'djangox_project.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'goalza',
+        'USER': 'goalzaadmin',
+        'PASSWORD': 'bulletseed9',
+        'HOST': 'localhost',
+        'PORT': '',
     }
 }
 

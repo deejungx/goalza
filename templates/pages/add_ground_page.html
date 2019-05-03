@@ -1,0 +1,22 @@
+{% extends '_base.html' %}
+{% load static crispy_forms_tags %}
+
+
+{% block content %}
+  <h1>Settings</h1>
+  <hr>
+  <form class="" method="post" novalidate>
+    {% csrf_token %}
+    <div class="form-row">
+      <div class="form-group col-md-6 mb-0">
+        {{ form.ground_number|as_crispy_field }}
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group col-md-2 mb-0">
+        {{ form.ground_name|as_crispy_field }}
+      </div>
+    </div>
+    <button type="submit" name="submit" class="btn btn-primary">Save</button>
+  </form>
+{% endblock %}
