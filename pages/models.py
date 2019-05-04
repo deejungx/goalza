@@ -15,7 +15,7 @@ def getDefaultClosingTime():
 class FutsalCompany(models.Model):
 
     futsal_id = models.AutoField(primary_key=True)
-    futsal_name = models.CharField(max_length=155)
+    futsal_name = models.CharField(max_length=155, unique=True)
     opening_time = models.TimeField(default=getDefaultOpeningTime)
     closing_time = models.TimeField(default=getDefaultClosingTime)
 

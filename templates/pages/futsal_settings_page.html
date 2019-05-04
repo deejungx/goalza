@@ -15,9 +15,7 @@
 {% endblock %}
 
 {% block content %}
-  <h1>Settings</h1>
-  <hr>
-  <a class="btn btn-primary" href="{% url 'addground' %}" role="button">Add Ground</a>
+  <h1>Futsal Settings</h1>
   <hr>
   <form method="post"  novalidate>
     {% csrf_token %}
@@ -26,7 +24,7 @@
         <p>Current Futsal Name:</p>
         <p><strong>{{ futsal.futsal_name}}</strong></p>
       </div>
-      <div class=" col-md-6 mb-0 form-group">
+      <div class=" col-md-3 mb-0 form-group">
         {{ form.futsal_name|as_crispy_field }}
       </div>
     </div>

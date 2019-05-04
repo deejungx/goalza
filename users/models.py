@@ -6,7 +6,7 @@ from pages.models import FutsalCompany
 
 
 class CustomUser(AbstractUser):
-    is_futsal_admin = models.BooleanField(default=True)  # Should be false on production
+    is_futsal_admin = models.BooleanField(default=True)  # Futsal admin's is_staff property should be set to False in production
 
     def __str__(self):
         return self.email

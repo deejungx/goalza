@@ -12,6 +12,7 @@ django-allauth = "==0.39.0"
 django-crispy-forms = "==1.7.1"
 django-debug-toolbar = "==1.11"
 psycopg2 = "*"
+django-phonenumber-field = "*"
 
 [requires]
 python_version = "3.7"

@@ -46,12 +46,24 @@
         {% endif %}
       </div>
     </nav>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-2 px-1 bg-light position-fixed" id="sticky-sidebar">
+                <nav class="nav flex-column">
+                  <a class="nav-link" href="{% url 'settings' %}">Futsal Settings</a>
+                  <a class="nav-link" href="{% url 'addground' %}">Ground Settings</a>
+                  <a class="nav-link" href="{% url 'addplayer' %}">Add New Player</a>
+                </nav>
+            </div>
+            <div class="col offset-2" id="main">
+              {% block content %}
+                <p>Default content...</p>
+              {% endblock content %}
+            </div>
+        </div>
+    </div>
 
-  <div class="container">
-    {% block content %}
-      <p>Default content...</p>
-    {% endblock content %}
-  </div>
+
 
    <nav class="navbar fixed-bottom navbar-dark bg-dark">
     <a class="navbar-brand" href="#">&copy; DjangoX 2019</a>
