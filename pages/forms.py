@@ -1,20 +1,22 @@
 from django import forms
 from .models import Ground, FutsalCompany, Player
+from .myFields import DAY_OF_THE_WEEK
 
 class FutsalSettingsForm(forms.Form):
 
     futsal_name = forms.CharField(widget=forms.TextInput(),
-                                  required=True)
+                                  required=True,
+                                  max_length=155)
     opening_time = forms.TimeField(widget=forms.TimeInput(format='%H:%M',
                                    attrs={
                                 'class': 'time_input',
-                                'data-time-format': 'H:i:s'
+                                'data-time-format': 'H:i'
                                     }),
                                     required=True)
     closing_time = forms.TimeField(widget=forms.TimeInput(format='%H:%M',
                                    attrs={
                                 'class': 'time_input',
-                                'data-time-format': 'H:i:s'
+                                'data-time-format': 'H:i'
                                     }),
                                     required=True)
     def clean(self):
@@ -62,3 +64,9 @@ class NewPlayer(forms.Form):
                 raise forms.ValidationError("Player with given Email address\
                                             already exists")
             return cleaned_data
+
+
+class NewBooking(forms.Form):
+
+    phone_number = forms.CharField(widget=forms.TextInput())
+    player_name = forms.CharField(widget=forms.TextInput())

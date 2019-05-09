@@ -1,0 +1,29 @@
+{% extends '_base.html' %}
+{% load static crispy_forms_tags %}
+
+
+{% block content %}
+
+<div class="row">
+  <div class="col-10">
+    <h1>Players</h1>
+    <table class="table">
+      <tr>
+        <th scope="col">Name</th>
+        <th scope="col">Phone</th>
+        <th scope="col">Address</th>
+        <th scope="col">Email</th>
+      </tr>
+      {% for player in players %}
+      <tr>
+        <td>{{ player.player_name|upper }}</td>
+        <td>{{ player.phone_number }}</td>
+        <td>{% if player.player_address %}{{ player.player_address }}{% else %}Not known{% endif %}</td>
+        <td>{% if player.player_email %}{{ player.player_email }}{% else %}Not known{% endif %}</td>
+      </tr>
+      {% endfor %}
+    </table>
+  </div>
+</div>
+
+{% endblock %}

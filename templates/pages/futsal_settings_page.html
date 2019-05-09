@@ -22,7 +22,7 @@
     <div class="form-row">
       <div class="col-md-3 mb-0">
         <p>Current Futsal Name:</p>
-        <p><strong>{{ futsal.futsal_name}}</strong></p>
+        <p><strong>{{ futsal.futsal_name|upper}}</strong></p>
       </div>
       <div class=" col-md-3 mb-0 form-group">
         {{ form.futsal_name|as_crispy_field }}
@@ -31,7 +31,7 @@
     <div class="form-row">
       <div class="col-md-3 mb-0">
         <p>Current Opening time:</p>
-        <p><strong>{{ futsal.opening_time }}</strong></p>
+        <p><strong>{{ futsal.opening_time|time:"H:i" }}</strong></p>
       </div>
       <div class="col-md-2 mb-0 form-group">
         {{ form.opening_time|as_crispy_field }}
@@ -40,7 +40,7 @@
     <div class="form-row">
       <div class="col-md-3 mb-0">
         <p>Current Closing time:</p>
-        <p><strong>{{ futsal.closing_time }}</strong></p>
+        <p><strong>{{ futsal.closing_time|time:"H:i" }}</strong></p>
       </div>
       <div class="col-md-2 mb-0 form-group">
         {{ form.closing_time|as_crispy_field }}
@@ -69,10 +69,11 @@
 <script src="{% static 'js/base.js' %}"></script>
 <script type="text/javascript">
   $('.time_input').timepicker({
-      'minTime': '5:00am',
-      'maxTime': '11:00pm',
+      'minTime': '4:00am',
+      'maxTime': '12:00am',
       'showDuration': false,
-      'step': 60
+      'step': 60,
+      'timeFormat': 'H:i',
   });
 </script>
 

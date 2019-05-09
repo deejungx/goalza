@@ -46,16 +46,16 @@ class Ground(models.Model):
 class Player(models.Model):
 
     player_id = models.AutoField(primary_key=True)
+    phone_number = models.CharField(max_length=12, unique=True)
     player_name = models.CharField(max_length=155)
     player_address = models.CharField(max_length=220, null=True, blank=True)
     player_email = models.EmailField(null=True, blank=True, unique=True)
-    phone_number = models.CharField(max_length=12, unique=True)
 
     def __str__(self):
         return self.player_name
 
 
-class GroundPrice(models.Model):
+class GroundPriceSegment(models.Model):
 
     price_segment_id = models.AutoField(primary_key=True)
     ground = models.ForeignKey(Ground, on_delete=models.CASCADE)
@@ -67,10 +67,10 @@ class GroundPrice(models.Model):
 
 class Booking(models.Model):
 
-    DEFAULT_BOOKING_DURATION = datetime.timedelta(hours=1)
+
     # PAYMENT STATUS CHOICES
     PENDING = 'PENDING'
-    COMPLETED = 'COMPLETED'
+    COMPLETE = 'COMPLETE'
     # BOOKING STATUS CHOICES
     CONFIRMED = 'CONFIRMED'
     PLAYING = 'PLAYING'
@@ -85,15 +85,15 @@ class Booking(models.Model):
     )
     PAYMENT_STATUS_CHOICES = (
         (PENDING, 'PENDING'),
-        (COMPLETED, 'COMPLETED'),
+        (COMPLETE, 'COMPLETE'),
     )
 
     booking_id = models.AutoField(primary_key=True)
     player = models.ForeignKey(Player, on_delete=models.CASCADE)
-    ground = models.ForeignKey(Ground, on_delete=models.CASCADE)
     booking_date = models.DateField()
+    ground = models.ForeignKey(Ground, on_delete=models.CASCADE)
     start_time = models.TimeField()
-    duration = models.DurationField(default=DEFAULT_BOOKING_DURATION)
+    duration = models.DurationField()
     booking_status = models.CharField(
             max_length=50,
             choices=BOOKING_STATUS_CHOICES,
@@ -104,6 +104,7 @@ class Booking(models.Model):
             choices=PAYMENT_STATUS_CHOICES,
             default=PENDING,
             )
+    price = models.DecimalField(max_digits=8, decimal_places=2)
 
     def __str__(self):
         return self.booking_id

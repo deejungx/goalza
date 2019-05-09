@@ -1,10 +1,14 @@
 from django.contrib.auth.decorators import login_required
-from django.views.generic import TemplateView
+from django.views.generic import TemplateView, ListView
 from django.shortcuts import render, get_object_or_404, redirect
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
+from django.utils.decorators import method_decorator
 from .decorators import futsal_admin_required
-from .forms import FutsalSettingsForm, NewGroundForm, NewPlayer
+from .forms import FutsalSettingsForm, NewGroundForm, NewPlayer, NewBooking
 from .models import FutsalCompany, Ground, Player
+import json
+
+decorators = [login_required, futsal_admin_required]
 
 def homePageView(request):
     return render(request, 'pages/home.html')
@@ -22,7 +26,7 @@ def futsalSettings(request):
     if request.method == 'POST':
         form = FutsalSettingsForm(request.POST)
         if form.is_valid():
-            futsal.fusal_name = form.cleaned_data['futsal_name']
+            futsal.futsal_name = form.cleaned_data['futsal_name']
             futsal.opening_time = form.cleaned_data['opening_time']
             futsal.closing_time = form.cleaned_data['closing_time']
             futsal.save()
@@ -79,3 +83,47 @@ def addNewPlayer(request):
         form = NewPlayer()
 
     return render(request, 'pages/add_new_player_page.html', {'form': form })
+
+
+@method_decorator(decorators, name='dispatch')
+class PlayerListView(ListView):
+    model = Player
+    context_object_name = 'players'
+
+
+@login_required
+@futsal_admin_required
+def addNewBooking(request):
+    if request.method == 'POST':
+        form = NewBooking(request.POST)
+        if form.is_valid():
+            pass
+    else:
+        form = NewBooking()
+    return render(request, 'pages/add_new_booking.html', {'form': form })
+
+
+def playerSuggestionModel(request):
+    if request.is_ajax():
+        phone = request.GET.get('term', '')
+        player_qry = Player.objects.filter(phone_number__startswith=phone)
+        results = []
+        for player in player_qry:
+            results.append(player.phone_number)
+        data = json.dumps(results)
+    else:
+        data = 'fail'
+    mimetype = 'application/json'
+    return HttpResponse(data, mimetype)
+
+
+def playerAutofil(request):
+    if request.is_ajax():
+        phone = request.GET.get('phone_number', '')
+        players = Player.objects.filter(phone_number=phone).values('player_name')
+        players_name = list(players)
+        data = json.dumps(players_name)
+    else:
+        data = 'fail'
+    mimetype = 'application/json'
+    return HttpResponse(data, mimetype)

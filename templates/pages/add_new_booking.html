@@ -1,0 +1,61 @@
+{% extends '_base.html' %}
+{% load static crispy_forms_tags %}
+
+
+{% block content %}
+
+<div class="row">
+  <div class="col-12">
+    <h1>New Booking</h1>
+    <form id="new-booking" action="{% url 'home' %}" method="post">
+      {% csrf_token %}
+      <div class="form-group col-md-3 mb-0">
+        {{ form.phone_number|as_crispy_field }}
+      </div>
+      <div class="form-group col-md-3 mb-0">
+        {{ form.player_name|as_crispy_field }}
+      </div>
+      <div class="form-group col-md-3 mb-0">
+        <button type="submit" name="submit" class="btn btn-primary">Add</button>
+      </div>
+    </form>
+  </div>
+
+</div>
+
+{% endblock %}
+
+
+{% block extrajs %}
+<script>
+        $(document).ready(function(){
+            $("#id_phone_number").autocomplete({
+                source: "/ajax_calls/player_contact/",
+                minLength: 6,
+                open: function(){
+                    setTimeout(function () {
+                        $('.ui-autocomplete').css('z-index', 99);
+                    }, 0);
+                }
+              });
+        });
+        $("#id_phone_number").change(function () {
+            var phone_number =  $(this).val();
+
+            $.ajax({
+              url: '/ajax_calls/player_autofil/',
+              data: {
+                'phone_number': phone_number
+              },
+              dataType: 'json',
+              success: function (data) {
+                for(i = 0; i < data.length; i++){
+                  var $playername = data[i].player_name;
+                  $("#id_player_name").val($playername);
+                  }
+              }
+            });
+
+        });
+</script>
+{% endblock %}
