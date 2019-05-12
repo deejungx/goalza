@@ -13,6 +13,7 @@
         <th scope="col">Phone</th>
         <th scope="col">Address</th>
         <th scope="col">Email</th>
+        <th scopr="col">Edit</th>
       </tr>
       {% for player in players %}
       <tr>
@@ -20,6 +21,7 @@
         <td>{{ player.phone_number }}</td>
         <td>{% if player.player_address %}{{ player.player_address }}{% else %}Not known{% endif %}</td>
         <td>{% if player.player_email %}{{ player.player_email }}{% else %}Not known{% endif %}</td>
+        <td><a href="{% url 'editplayer' player_id=player.player_id%}">Edit</a></td>
       </tr>
       {% endfor %}
     </table>

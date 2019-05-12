@@ -1,4 +1,5 @@
 from django import forms
+from django.forms import ModelForm
 from .models import Ground, FutsalCompany, Player
 from .myFields import DAY_OF_THE_WEEK
 
@@ -66,7 +67,23 @@ class NewPlayer(forms.Form):
             return cleaned_data
 
 
+class GroundEditForm(ModelForm):
+
+    class Meta:
+        model = Ground
+        fields = ['ground_number', 'ground_name']
+
+
+
 class NewBooking(forms.Form):
 
     phone_number = forms.CharField(widget=forms.TextInput())
     player_name = forms.CharField(widget=forms.TextInput())
+    booking_date = forms.DateField(widget=forms.DateInput(attrs={'readonly': 'true'}))
+
+
+class EditPlayer(ModelForm):
+
+    class Meta:
+            model = Player
+            fields = ['phone_number', 'player_name', 'player_address', 'player_email']

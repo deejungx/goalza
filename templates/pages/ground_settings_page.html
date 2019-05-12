@@ -26,12 +26,14 @@
                     <tr>
                       <th scope="col">Ground Number</th>
                       <th scope="col">Ground Name</th>
+                      <th scope="col">Edit</th>
                     </tr>
                   </thead>
                   {% for ground in grounds %}
                   <tr>
                     <th scope="col">{{ ground.ground_number }}</th>
                     <td>{{ ground.ground_name }}</td>
+                    <td><a href="{% url 'editground' ground_id=ground.ground_id %}">Edit</a></td>
                   </tr>
                   {% endfor %}
                 </table>

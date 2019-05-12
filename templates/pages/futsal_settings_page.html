@@ -68,13 +68,23 @@
 <!-- Project JS -->
 <script src="{% static 'js/base.js' %}"></script>
 <script type="text/javascript">
-  $('.time_input').timepicker({
+
+  $('#id_opening_time').timepicker({
       'minTime': '4:00am',
+      'maxTime': '18:00pm',
+      'showDuration': false,
+      'step': 60,
+      'timeFormat': 'H:i',
+  });
+
+  $('#id_closing_time').timepicker({
+      'minTime': '14:00pm',
       'maxTime': '12:00am',
       'showDuration': false,
       'step': 60,
       'timeFormat': 'H:i',
   });
+
 </script>
 
 {% endblock javascript %}

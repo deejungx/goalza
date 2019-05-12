@@ -9,15 +9,29 @@
     <h1>New Booking</h1>
     <form id="new-booking" action="{% url 'home' %}" method="post">
       {% csrf_token %}
-      <div class="form-group col-md-3 mb-0">
-        {{ form.phone_number|as_crispy_field }}
+      <div class="form-group">
+        <div class="col-md-3 mb-0">
+          {{ form.phone_number|as_crispy_field }}
+        </div>
       </div>
-      <div class="form-group col-md-3 mb-0">
-        {{ form.player_name|as_crispy_field }}
+      <div class="form-group">
+        <div class="col-md-3 mb-0">
+          {{ form.player_name|as_crispy_field }}
+        </div>
       </div>
-      <div class="form-group col-md-3 mb-0">
-        <button type="submit" name="submit" class="btn btn-primary">Add</button>
+      <hr>
+      <div class="form-group">
+        <div class="col-md-3 mb-0">
+          {{ form.booking_date|as_crispy_field }}
+        </div>
       </div>
+      <hr>
+      <div class="row">
+        <div class="form-group col-md-3 mb-0">
+          <button type="submit" name="submit" class="btn btn-primary">Add</button>
+        </div>
+      </div>
+
     </form>
   </div>
 
@@ -38,6 +52,11 @@
                     }, 0);
                 }
               });
+
+              $("#id_phone_number").val(function (){
+                  $("#id_phone_number").trigger('change');
+              })
+
         });
         $("#id_phone_number").change(function () {
             var phone_number =  $(this).val();
@@ -49,13 +68,24 @@
               },
               dataType: 'json',
               success: function (data) {
-                for(i = 0; i < data.length; i++){
-                  var $playername = data[i].player_name;
+                  var $playername = data[0].player_name;
                   $("#id_player_name").val($playername);
-                  }
+
               }
             });
 
+        });
+
+        var today = new Date();
+        var dd = String(today.getDate()).padStart(2, '0');
+        var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+        var yyyy = today.getFullYear();
+
+        today = mm + '/' + dd + '/' + yyyy;
+
+        $("#id_booking_date").datepicker({
+          minDate: today,
+          maxDate: '+14',
         });
 </script>
 {% endblock %}
