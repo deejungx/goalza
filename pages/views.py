@@ -7,8 +7,10 @@ from django.urls import reverse
 from .decorators import futsal_admin_required
 from .forms import FutsalSettingsForm, NewGroundForm, NewPlayer, NewBooking
 from .forms import GroundEditForm, EditPlayer
-from .models import FutsalCompany, Ground, Player
+from .models import FutsalCompany, Ground, Player, Booking
 import json
+import datetime
+from django.core.serializers.json import DjangoJSONEncoder
 
 decorators = [login_required, futsal_admin_required]
 
@@ -145,7 +147,11 @@ def addNewBooking(request):
             pass
     else:
         form = NewBooking()
-    return render(request, 'pages/add_new_booking.html', {'form': form })
+        grounds = request.user.profile.futsal.ground_set.all()
+    return render(request,
+                  'pages/add_new_booking.html',
+                  {'form': form, 'grounds': grounds}
+                 )
 
 
 def playerSuggestionModel(request):
@@ -170,5 +176,39 @@ def playerAutofil(request):
         data = json.dumps(players_name)
     else:
         data = 'fail'
+    mimetype = 'application/json'
+    return HttpResponse(data, mimetype)
+
+
+def bookingsForDate(request):
+    if request.is_ajax():
+        date = request.GET.get('booking_date', '')
+        try:
+            date_obj = datetime.datetime.strptime(date, '%m/%d/%Y')
+        except ValueError:
+            print("Incorrect data format")
+        bookings = Booking.objects.filter(booking_date=date_obj).values()
+        bookings = list(bookings)
+        fcbookings = []
+        fcbooking = {}
+        for booking in bookings:
+            fcbooking['id']=booking['booking_id']
+            bookingPlayer = Player.objects.get(pk=booking['player_id'])
+            fcbooking['title'] = bookingPlayer.player_name
+            fcbooking['start'] = booking['booking_date']
+            fcbooking['startTime'] = booking['start_time']
+            endtime = datetime.datetime.combine(booking['booking_date'], booking['start_time']) + booking['duration']
+            fcbooking['endTime'] = endtime.time()
+            fcbooking['overlap'] = 'false'
+            fcbooking['ground_id'] = booking['ground_id']
+            fcbookings.append(fcbooking)
+        data = json.dumps(fcbookings,
+                          sort_keys=True,
+                          indent=1,
+                          cls=DjangoJSONEncoder)
+
+        print(data)
+    else:
+        data:'fail'
     mimetype = 'application/json'
     return HttpResponse(data, mimetype)

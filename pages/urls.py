@@ -14,4 +14,5 @@ urlpatterns = [
     path('settings/new_booking/', views.addNewBooking, name='addBooking'),
     path('ajax_calls/player_contact/', views.playerSuggestionModel, name='playerSuggestion'),
     path('ajax_calls/player_autofil/', views.playerAutofil, name='playerAutofil'),
+    path('ajax_calls/bookings_for_date/', views.bookingsForDate, name='bookingsForDate'),
 ]

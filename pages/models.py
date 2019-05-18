@@ -76,6 +76,7 @@ class Booking(models.Model):
     PLAYING = 'PLAYING'
     COMPLETE = 'COMPLETE'
     CANCELED = 'CANCELED'
+    # Booking choices
     BOOKING_STATUS_CHOICES = (
         # (PENDING, 'PENDING CONFIRMATION'),
         (CONFIRMED, 'CONFIRMED'),
@@ -83,6 +84,7 @@ class Booking(models.Model):
         (COMPLETE, 'COMPLETE'),
         (CANCELED, 'CANCELED'),
     )
+    # Payment choices
     PAYMENT_STATUS_CHOICES = (
         (PENDING, 'PENDING'),
         (COMPLETE, 'COMPLETE'),
@@ -107,4 +109,4 @@ class Booking(models.Model):
     price = models.DecimalField(max_digits=8, decimal_places=2)
 
     def __str__(self):
-        return self.booking_id
+        return str(self.booking_id)

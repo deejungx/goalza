@@ -1,6 +1,19 @@
 {% extends '_base.html' %}
 {% load static crispy_forms_tags %}
 
+{% block extraimports %}
+<link href='{% static "fcalendar/main.css" %}' rel='stylesheet' />
+<link href='{% static "fcalendar/daygrid/main.css" %}' rel='stylesheet' />
+<link href='{% static "fcalendar/timegrid/main.css" %}' rel='stylesheet' />
+
+<script src='{% static "fcalendar/main.js" %}'></script>
+<script src='{% static "fcalendar/daygrid/main.js" %}'></script>
+<script src='{% static "fcalendar/interaction/main.js" %}'></script>
+<script src='{% static "fcalendar/timegrid/main.js" %}'></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
+
+
+{% endblock %}
 
 {% block content %}
 
@@ -25,6 +38,24 @@
           {{ form.booking_date|as_crispy_field }}
         </div>
       </div>
+      <div class="form-group">
+        <div class="ground-names col-md-3 mb-0 d-none">
+        {% for ground in grounds %}
+        <button type="button" class="btn btn-warning ground-btn" id="{{ ground.ground_number }}">{{ ground.ground_name }}</button>
+        {% endfor %}
+        </div>
+      </div>
+      <div class="form-group">
+      <div id="cal-box" class="cal-box" style="width: 400px; display: inline-block;">
+        <div id="calendar"></div>
+        </div>
+        <div id="external-box" style="display: inline-block; margin-left: 50px;">
+          <p>
+            <strong>Drag and drop this in the timetable</strong>
+          </p>
+          <div class="new-booking">New Booking</div>
+        </div>
+      </div>
       <hr>
       <div class="row">
         <div class="form-group col-md-3 mb-0">
@@ -42,6 +73,7 @@
 
 {% block extrajs %}
 <script>
+      <!-- Phone number Auto-complete  -->
         $(document).ready(function(){
             $("#id_phone_number").autocomplete({
                 source: "/ajax_calls/player_contact/",
@@ -58,6 +90,7 @@
               })
 
         });
+        <!-- Auto fill player name is phone number found -->
         $("#id_phone_number").change(function () {
             var phone_number =  $(this).val();
 
@@ -75,7 +108,7 @@
             });
 
         });
-
+        <!-- Date picker -->
         var today = new Date();
         var dd = String(today.getDate()).padStart(2, '0');
         var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
@@ -84,8 +117,120 @@
         today = mm + '/' + dd + '/' + yyyy;
 
         $("#id_booking_date").datepicker({
-          minDate: today,
-          maxDate: '+14',
+          // minDate: today,
+          // maxDate: '+14',
         });
+
+        <!-- Recieve booking data for given date-->
+        $("#id_booking_date").change(function () {
+            var booking_date =  $(this).val();
+
+            $.ajax({
+              url: '/ajax_calls/bookings_for_date/',
+              data: {
+                'booking_date': booking_date
+              },
+              dataType: 'json',
+              success: function (data) {
+                  bookings_of_date = data;
+              }
+            });
+
+            $(".ground-names").removeClass("d-none");
+        });
+
+        <!-- Filter bookings for ground and render calendar -->
+
+        <!-- Bookings and filtered bookings -->
+        var bookings_of_date = {};
+        var filteredBookings = [];
+
+        <!-- Restore new booking div -->
+
+        function restore() {
+          var elem = document.getElementById('external-box');
+          var div = document.createElement('div');
+          div.className = "new-booking";
+          div.innerHTML = "New Booking";
+          elem.appendChild(div);
+        }
+
+
+      $('.ground-btn').click(function() {
+
+            var gid = $(this).attr('id');
+            var filteredBookings = bookings_of_date.filter(function(booking){
+              return booking.ground_id == gid;
+            });
+            console.log(filteredBookings);
+
+              var Calendar = FullCalendar.Calendar;
+              var Draggable = FullCalendarInteraction.Draggable;
+
+              var containerEl = document.getElementById('external-box');
+              var calendarEl = document.getElementById('calendar');
+
+              new Draggable(containerEl, {
+                itemSelector: '.new-booking',
+                eventData: function(eventEl) {
+                  return {
+                    title: eventEl.innerText,
+                    id: "newbooking",
+                    overlap: false,
+                    editable: true,
+                  };
+                }
+              });
+              var calendar = new Calendar(calendarEl, {
+                height: 650,
+                plugins: [ 'timeGrid', 'interaction' ],
+                defaultView: 'timeGridDay',
+                minTime: '6:00:00',
+                maxTime: '22:00:00',
+                allDaySlot: false,
+                droppable: true,
+                columnHeader: false,
+                drop: function(info) {
+                  info.draggedEl.parentNode.removeChild(info.draggedEl);
+                },
+                header: {
+                  left: '',
+                  center: '',
+                  right: '',
+                },
+                events: filteredBookings,
+                eventClick: function(info) {
+                  if (info.event.id == "newbooking") {
+                  info.event.remove();
+                  restore();
+                }
+                },
+                customButtons: {
+                  myCustomButton: {
+                    text: 'Confirm',
+                    click: function() {
+                      var event = calendar.getEventById('newbooking');
+                      var starttime = moment(event.start);
+                      console.log(starttime.format("HH:mm:ss"));
+                      if (event.end) {
+                          var endtime = moment(event.end);
+                          console.log(endtime.format("HH:mm:ss"));
+                      } else {
+                        var endstring = moment(starttime).add(1,'hours');
+                        console.log(endstring.format("HH:mm:ss"));
+                      }
+
+                    }
+                  }
+                },
+                footer: {
+                  left: '',
+                  center: 'myCustomButton',
+                  right: '',
+                },
+              });
+              calendar.render();
+
+      });
 </script>
 {% endblock %}
